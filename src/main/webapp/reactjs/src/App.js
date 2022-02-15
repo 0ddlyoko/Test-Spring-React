@@ -1,9 +1,8 @@
-import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import {Col, Container, Row} from "react-bootstrap";
-import Welcome from "./components/Welcome";
 import {Component} from "react";
+import Dashboard from "./components/dashboard/Dashboard";
 
 class App extends Component {
 
@@ -14,7 +13,13 @@ class App extends Component {
             <Row>
               <Col lg={12} className={"margin-top"}>
                 <Routes>
-                  <Route path="/" element={<Welcome />}/>
+                    <Route path="/" element={<Dashboard />}/>
+                    {
+                        /*
+                    <Route path="/projects" element={<ProjectList />}/>
+                    <Route path="/projects/:id" element={<ProjectDisplay />}/>
+                         */
+                    }
                 </Routes>
               </Col>
             </Row>
