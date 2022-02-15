@@ -35,8 +35,6 @@ public class ProjectController {
     public ResponseEntity<PagedResponse<ProjectResponse>> getAllProjects(
             @RequestParam(name = "page", required = false, defaultValue = "0") @PositiveOrZero int page,
             @RequestParam(name = "size", required = false, defaultValue = DemoApplication.DEFAULT_PAGE_SIZE) @PositiveOrZero int size) {
-        System.out.println("page = " + page);
-        System.out.println("size = " + size);
         Page<ProjectResponse> projects = projectService.getAllProjects(page, size).map(ProjectResponse::fromModel);
         PagedResponse<ProjectResponse> response = new PagedResponse<>(projects.getContent(), page, projects.getNumberOfElements(), projects.getTotalElements(), projects.getTotalPages());
         return new ResponseEntity<>(response, HttpStatus.OK);
