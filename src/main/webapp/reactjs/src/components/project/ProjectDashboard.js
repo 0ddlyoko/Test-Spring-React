@@ -1,7 +1,7 @@
 import ProjectListToolbar from "./ProjectListToolbar";
-import ListView from "../list/ListView";
-import {Box, Checkbox, TableCell, TableRow} from "@mui/material";
+import {Box, Checkbox, Table, TableBody, TableCell, TableHead, TableRow} from "@mui/material";
 import {Component} from "react";
+import axios from "axios";
 
 
 class ProjectDashboard extends Component {
@@ -9,13 +9,50 @@ class ProjectDashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            projects: [],
-            selectedProjects: [],
+            list: [],
+            selected: new Set(),
         };
     }
 
-    handleSelectAll(event) {
+    componentDidMount() {
+        axios.get("http://localhost:8080/api/project")
+            .then(value => {
+                const projects = value.data;
+                this.setState({
+                    list: projects["content"],
+                    page: projects["page"],
+                    size: projects["size"],
+                    totalElements: projects["totalElements"],
+                    totalPages: projects["totalPages"],
+                });
+            })
+    }
 
+    handleSelectAll() {
+        if (this.state.selected.size === this.state.list.length) {
+            this.setState({
+                selected: new Set(),
+            })
+        } else {
+            this.setState({
+                selected: new Set(this.state.list),
+            })
+        }
+    }
+
+    handleSelectProject(project) {
+        const lst = this.state.selected;
+        if (lst.has(project)) {
+            lst.delete(project);
+            this.setState({
+                selected: lst,
+            })
+        } else {
+            lst.add(project);
+            this.setState({
+                selected: lst,
+            })
+        }
     }
 
     render() {
@@ -23,40 +60,54 @@ class ProjectDashboard extends Component {
             <>
                 <ProjectListToolbar />
                 <Box sx={{ mt: 3 }}>
-                    <ListView
-                        header={() => <TableRow>
-                            <TableCell padding="checkbox">
-                                <Checkbox
-                                    checked={ this.state.selectedProjects.length === this.state.projects.length }
-                                    color="primary"
-                                    indeterminate={
-                                        this.state.selectedProjects.length > 0
-                                        && this.state.selectedProjects.length < this.state.projects.length
-                                    }
-                                    onChange={ this.handleSelectAll }
-                                />
-                            </TableCell>
-                            <TableCell>
-                                Name
-                            </TableCell>
-                            <TableCell>
-                                Email
-                            </TableCell>
-                            <TableCell>
-                                Location
-                            </TableCell>
-                            <TableCell>
-                                Phone
-                            </TableCell>
-                            <TableCell>
-                                Registration date
-                            </TableCell>
-                        </TableRow>}
-                        elements={ this.state.projects }
-                        page="1"
-                        maxPage="10"
-                        startingValue="6"
-                    />
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell padding="checkbox">
+                                    <Checkbox
+                                        checked={ this.state.selected.size === this.state.list.length }
+                                        color="primary"
+                                        indeterminate={
+                                            this.state.selected.size     > 0
+                                            && this.state.selected.size < this.state.list.length
+                                        }
+                                        onChange={ () => this.handleSelectAll() }
+                                    />
+                                </TableCell>
+                                <TableCell>
+                                    ID
+                                </TableCell>
+                                <TableCell>
+                                    Name
+                                </TableCell>
+                                <TableCell>
+                                    Number of tasks
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {this.state.list.map(project => (
+                                <TableRow key={ project.id }>
+                                    <TableCell padding="checkbox">
+                                        <Checkbox
+                                            checked={ this.state.selected.has(project) }
+                                            color="primary"
+                                            onChange={ () => this.handleSelectProject(project) }
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        { project["id"] }
+                                    </TableCell>
+                                    <TableCell>
+                                        { project["name"] }
+                                    </TableCell>
+                                    <TableCell>
+                                        { project["tasks"].length }
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
                 </Box>
             </>
         );
