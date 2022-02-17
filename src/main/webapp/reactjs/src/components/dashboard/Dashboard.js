@@ -12,11 +12,11 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import MuiDrawer from '@mui/material/Drawer';
 import MenuIcon from "@mui/icons-material/Menu";
-import {Component} from "react";
+import { Component } from "react";
 import Navbar from "./Navbar";
 import Test1 from "./Test1";
 import Test2 from "./Test2";
-import ProjectList from "../project/ProjectList";
+import ProjectDashboard from "../project/ProjectDashboard";
 
 // Theme from https://github.com/mui/material-ui/blob/master/docs/data/material/getting-started/templates/dashboard/
 
@@ -132,7 +132,7 @@ class Dashboard extends Component {
                             </IconButton>
                         </Toolbar>
                         <Divider/>
-                        <Navbar navs={ this.state.nav }/>
+                        <Navbar navs={ this.state.nav } onClick={ this.switchPage }/>
                     </Drawer>
                     <Box
                         component="main"
@@ -146,7 +146,7 @@ class Dashboard extends Component {
                             overflow: "auto",
                         }}>
                         <Toolbar/>
-                        <Container maxWidth="lg" sx={{mt: 4, mb: 4}}>
+                        <Container maxWidth={ false } sx={{mt: 4, mb: 4}}>
                             <Page />
                         </Container>
                     </Box>
@@ -161,19 +161,16 @@ class Dashboard extends Component {
             "project": {
                 "name": "Project",
                 "icon": DashboardIcon,
-                "onClick": () => this.switchPage("project"),
-                "page": ProjectList,
+                "page": ProjectDashboard,
             },
             "test_1": {
                 "name": "Test 1",
                 "icon": DashboardIcon,
-                "onClick": () => this.switchPage("test_1"),
                 "page": Test1,
             },
             "test_2": {
                 "name": "Test 2",
                 "icon": DashboardIcon,
-                "onClick": () => this.switchPage("test_2"),
                 "page": Test2,
             },
         }
